@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
+    paperDevBundle("1.19.1-pre3-R0.1-SNAPSHOT")
 }
 
 tasks {
