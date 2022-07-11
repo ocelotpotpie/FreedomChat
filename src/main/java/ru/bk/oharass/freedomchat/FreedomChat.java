@@ -35,9 +35,9 @@ public class FreedomChat extends JavaPlugin implements Listener {
                     final Component content = packet.unsignedContent().orElse(packet.signedContent());
 
                     final Registry<ChatType> registry = player.level.registryAccess().registryOrThrow(Registry.CHAT_TYPE_REGISTRY);
-                    final String key = registry.getHolder(packet.typeId()).orElseThrow().unwrapKey().orElseThrow().location().toShortLanguageKey();
+                    final ChatTypeDecoration decoration = registry.byId(packet.typeId()).chat();
 
-                    final Component decoratedContent = ChatTypeDecoration.withSender(key).decorate(content, packet.sender());
+                    final Component decoratedContent = decoration.decorate(content, packet.sender());
                     super.write(ctx, new ClientboundSystemChatPacket(decoratedContent, false), promise);
                     return;
                 }

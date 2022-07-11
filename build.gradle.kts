@@ -34,8 +34,8 @@ tasks {
 }
 
 bukkit {
-    website = "https://github.com/Oharass/FreedomChat"
-    authors = listOf("Oharass")
+    website = "https://github.com/sulu5890/FreedomChat"
+    authors = listOf("Oharass", "sulu")
     main = "ru.bk.oharass.freedomchat.FreedomChat"
     apiVersion = "1.19"
 }
