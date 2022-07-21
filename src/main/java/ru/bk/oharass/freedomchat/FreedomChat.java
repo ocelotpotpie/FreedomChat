@@ -9,6 +9,7 @@ import net.minecraft.network.chat.ChatTypeDecoration;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
+import net.minecraft.network.protocol.game.ClientboundServerDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
@@ -39,6 +40,11 @@ public class FreedomChat extends JavaPlugin implements Listener {
 
                     final Component decoratedContent = decoration.decorate(content, packet.sender());
                     super.write(ctx, new ClientboundSystemChatPacket(decoratedContent, false), promise);
+                    return;
+                }
+
+                if (msg instanceof ClientboundServerDataPacket packet) {
+                    super.write(ctx, new ClientboundServerDataPacket(packet.getMotd().orElse(null), packet.getIconBase64().orElse(null), packet.previewsChat(), packet.enforcesSecureChat()), promise);
                     return;
                 }
 
