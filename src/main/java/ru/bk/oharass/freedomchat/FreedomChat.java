@@ -15,13 +15,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.slf4j.Logger;
 
 import java.util.Optional;
+import java.util.logging.Level;
 
 public class FreedomChat extends JavaPlugin implements Listener {
-    private final Logger logger = this.getSLF4JLogger();
-
     @Override
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -41,7 +39,7 @@ public class FreedomChat extends JavaPlugin implements Listener {
 
                     final Optional<ChatType.Bound> ctbo = packet.chatType().resolve(player.level.registryAccess());
                     if (ctbo.isEmpty()) {
-                        logger.warn("Processing packet with unknown ChatType {}", packet.chatType().chatType(), new Throwable());
+                        getLogger().log(Level.WARNING, "Processing packet with unknown ChatType " + packet.chatType().chatType(), new Throwable());
                         return;
                     }
                     final Component decoratedContent = ctbo.orElseThrow().decorate(content);
