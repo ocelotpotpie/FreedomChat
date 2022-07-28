@@ -3,7 +3,7 @@
 FreedomChat is a very simple plugin that makes player chat unreportable. FreedomChat completely disables chat reporting for 1.19+ without other negative consequences and maximum compatibility.
 
 > **Note**
-> CraftBukkit (and thus both Spigot and Paper) already do exactly what FreedomChat does. At this time, it is completely useless. However, this will not be the case in the future.
+> CraftBukkit (and thus both Spigot and Paper) currently do exactly what FreedomChat does for player public chat messages. This is not the case for vanilla commands (`/msg`, `/say`) which will currently be signed. This plugin protects you from reporting of both.
 
 ## Installation
 Installing this plugin is very simple. Just download it and put it in your plugins folder. There is no configuration, it is always active.
