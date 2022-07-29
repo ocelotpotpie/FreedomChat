@@ -6,6 +6,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundPlayerChatHeaderPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundServerDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
@@ -45,6 +46,11 @@ public class FreedomChat extends JavaPlugin implements Listener {
                     final Component decoratedContent = ctbo.orElseThrow().decorate(content);
 
                     super.write(ctx, new ClientboundSystemChatPacket(decoratedContent, false), promise);
+                    return;
+                }
+
+                // strip useless header packets
+                if (msg instanceof ClientboundPlayerChatHeaderPacket) {
                     return;
                 }
 
