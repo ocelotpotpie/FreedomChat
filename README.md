@@ -2,13 +2,10 @@
 ## The Definitive Chat Report Disabler
 FreedomChat is a very simple plugin that makes player chat unreportable. FreedomChat completely disables chat reporting for 1.19+ without other negative consequences and maximum compatibility.
 
-> **Note**
-> CraftBukkit (and thus both Spigot and Paper) currently do exactly what FreedomChat does for player public chat messages. This is not the case for vanilla commands (`/msg`, `/say`) which will currently be signed. This plugin protects you from reporting of both.
-
 ## Installation
 Installing this plugin is very simple. Just download it and put it in your plugins folder. There is no configuration, it is always active.
 
-If you get an error when the plugin is enabling, you have likely downloaded the wrong version! Each Minecraft version has its own plugin version.
+If you get an error when the plugin is enabling or when the players are joining, you have likely downloaded the wrong version! Each Minecraft version has its own plugin version.
 
 ## Comparison
 
@@ -23,3 +20,5 @@ This is because while NoEncryption strips the signature from player chat packets
 </details>
 
 Unlike NoChatReports (bukkit plugin, **not** mod), FreedomChat will not break chat plugins. NoChatReports will completely break any chat plugin, by design. It must manually add compatibility for every plugin modifying chat. FreedomChat requires no such work, and will work out of the box with almost every chat plugin.
+
+Unlike NoPopup, this plugin has no chance to cause your players to automatically disconnect themselves under certain conditions!
