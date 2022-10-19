@@ -12,4 +12,4 @@ claim-secure-chat-enforced: true
 # NoChatReports client mod. This displays a green icon on the server list
 # screen and if enforce-secure-profiles is disabled the open chat screen
 # for users of the client-side mod.
-send-enforces-secure-chat-to-client: false
+send-prevents-chat-reports-to-client: false

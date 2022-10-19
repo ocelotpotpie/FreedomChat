@@ -44,7 +44,7 @@ public class FreedomChat extends JavaPlugin implements Listener {
 
         this.getServer().getPluginManager().registerEvents(this, this);
 
-        if (!config.getBoolean("send-enforces-secure-chat-to-client"))
+        if (!config.getBoolean("send-prevents-chat-reports-to-client"))
             return; // no need to check paper/register listener
 
         try {
