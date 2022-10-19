@@ -1,0 +1,15 @@
+# Whether FreedomChat should replace player (signed or unsigned) chat with
+# system messages. This is what makes chat not reportable.
+rewrite-chat: true
+
+# Whether FreedomChat should claim to clients that secure chat is enforced.
+# With this set to true, the "Chat messages can't be verified" toast will not
+# be shown. This is, in default configurations, unrelated to allowing clients
+# not signing their messages join.
+claim-secure-chat-enforced: true
+
+# Whether to report the server as secure (disabling chat reporting) to the
+# NoChatReports client mod. This displays a green icon on the server list
+# screen and if enforce-secure-profiles is disabled the open chat screen
+# for users of the client-side mod.
+send-enforces-secure-chat-to-client: false
