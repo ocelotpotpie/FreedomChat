@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "ru.bk.oharass.freedomchat"
-version = "1.1.0"
+version = "1.2.0"
 description = "Liberate your server from the chat-reporting bourgeoisie! Disable chat reporting with maximum compatibility."
 
 dependencies {
