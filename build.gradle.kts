@@ -10,7 +10,7 @@ version = "1.2.1"
 description = "Liberate your server from the chat-reporting bourgeoisie! Disable chat reporting with maximum compatibility."
 
 dependencies {
-    paperDevBundle("1.19.1-R0.1-SNAPSHOT")
+    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
 }
 
 tasks {

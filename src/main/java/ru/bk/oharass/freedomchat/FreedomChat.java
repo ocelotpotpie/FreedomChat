@@ -7,13 +7,12 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundPlayerChatHeaderPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundServerDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -98,7 +98,7 @@ public class FreedomChat extends JavaPlugin implements Listener {
 
                 // rewrite all signed (or unsigned) player messages as system messages
                 if (rewriteChat && msg instanceof ClientboundPlayerChatPacket packet) {
-                    final Component content = packet.message().unsignedContent().orElse(packet.message().signedContent().decorated());
+                    final Component content = Objects.requireNonNullElseGet(packet.unsignedContent(), () -> Component.literal(packet.body().content()));
 
                     final Optional<ChatType.Bound> ctbo = packet.chatType().resolve(player.level.registryAccess());
                     if (ctbo.isEmpty()) {
@@ -111,14 +111,9 @@ public class FreedomChat extends JavaPlugin implements Listener {
                     return;
                 }
 
-                // strip useless header packets
-                if (rewriteChat && msg instanceof ClientboundPlayerChatHeaderPacket) {
-                    return;
-                }
-
                 // remove unsigned content warning toast. all messages are now system.
                 if (claimSecureChatEnforced && msg instanceof ClientboundServerDataPacket packet) {
-                    super.write(ctx, new ClientboundServerDataPacket(packet.getMotd().orElse(null), packet.getIconBase64().orElse(null), packet.previewsChat(), true), promise);
+                    super.write(ctx, new ClientboundServerDataPacket(packet.getMotd().orElse(null), packet.getIconBase64().orElse(null), true), promise);
                     return;
                 }
 
