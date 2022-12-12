@@ -22,7 +22,12 @@ public class FreedomChat extends JavaPlugin implements Listener {
                 this
         );
 
-        addListener(listenerKey, channel -> channel.pipeline().addAfter("packet_handler", "freedom_handler", handler));
+        addListener(listenerKey, channel -> {
+            for (final String name : channel.pipeline().names()) {
+                if (name.startsWith("Geyser")) return;
+            }
+            channel.pipeline().addAfter("packet_handler", "freedom_handler", handler);
+        });
     }
 
     @Override
