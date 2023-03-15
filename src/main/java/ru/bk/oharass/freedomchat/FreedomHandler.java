@@ -1,11 +1,13 @@
 package ru.bk.oharass.freedomchat;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToByteEncoder;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.ChatType;
@@ -16,33 +18,15 @@ import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundServerDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
+import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 
 @ChannelHandler.Sharable
-public class FreedomHandler extends MessageToByteEncoder<Packet> {
-    private static final Gson GSON;
-
-    static {
-        Field field = Arrays.stream(ClientboundStatusResponsePacket.class.getDeclaredFields())
-            .filter(f -> f.getType() == Gson.class && Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && Modifier.isPrivate(f.getModifiers()))
-            .findFirst()
-            .get();
-
-        field.setAccessible(true);
-
-        try {
-            GSON = (Gson) field.get(null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Failed to get ClientboundStatusResponsePacket.GSON", e);
-        }
-    }
+public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
 
     private final boolean rewriteChat;
     private final boolean claimSecureChatEnforced;
@@ -93,17 +77,24 @@ public class FreedomHandler extends MessageToByteEncoder<Packet> {
 
     private void encode(final ChannelHandlerContext ctx, final ClientboundServerDataPacket msg, final FriendlyByteBuf buf) {
         writeId(ctx, msg, buf);
-        buf.writeOptional(msg.getMotd(), FriendlyByteBuf::writeComponent);
-        buf.writeOptional(msg.getIconBase64(), FriendlyByteBuf::writeUtf);
+        buf.writeComponent(msg.getMotd());
+        buf.writeOptional(msg.getIconBytes(), FriendlyByteBuf::writeByteArray);
         buf.writeBoolean(true);
     }
 
     private void encode(final ChannelHandlerContext ctx, final ClientboundStatusResponsePacket msg, final FriendlyByteBuf buf) {
-        final JsonElement json = GSON.toJsonTree(msg.getStatus());
-        json.getAsJsonObject().addProperty("preventsChatReports", true);
+        System.out.println("Encoding ClientboundStatusResponsePacket");
+        final JsonObject status = ServerStatus.CODEC
+            .encodeStart(JsonOps.INSTANCE, msg.status())
+            .get()
+            .left()
+            .orElseThrow(() -> new EncoderException("Failed to encode ServerStatus"))
+            .getAsJsonObject();
+
+        status.addProperty("preventsChatReports", true);
 
         writeId(ctx, msg, buf);
-        buf.writeUtf(GSON.toJson(json));
+        buf.writeUtf(GsonComponentSerializer.gson().serializer().toJson(status));
     }
 
     private void writeId(final ChannelHandlerContext ctx, final Packet<?> packet, final FriendlyByteBuf buf) {

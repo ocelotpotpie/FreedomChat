@@ -6,11 +6,11 @@ plugins {
 }
 
 group = "ru.bk.oharass.freedomchat"
-version = "1.3.1"
+version = "1.4.0"
 description = "Liberate your server from the chat-reporting bourgeoisie! Disable chat reporting with maximum compatibility."
 
 dependencies {
-    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
 }
 
 tasks {
