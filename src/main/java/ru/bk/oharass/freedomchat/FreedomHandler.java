@@ -83,7 +83,6 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     }
 
     private void encode(final ChannelHandlerContext ctx, final ClientboundStatusResponsePacket msg, final FriendlyByteBuf buf) {
-        System.out.println("Encoding ClientboundStatusResponsePacket");
         final JsonObject status = ServerStatus.CODEC
             .encodeStart(JsonOps.INSTANCE, msg.status())
             .get()
