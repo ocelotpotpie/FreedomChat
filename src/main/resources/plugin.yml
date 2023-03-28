@@ -1,0 +1,10 @@
+name: "FreedomChat"
+version: "$version"
+main: "ru.bk.oharass.freedomchat.FreedomChat"
+description: "$description"
+authors:
+  - "oharass"
+  - "sulu"
+website: "https://github.com/e-im/FreedomChat"
+api-version: "1.19"
+folia-supported: true
