@@ -1,15 +1,15 @@
 plugins {
     id("java-library")
-    id("io.papermc.paperweight.userdev") version "1.5.3"
-    id("xyz.jpenilla.run-paper") version "2.0.1"
+    id("io.papermc.paperweight.userdev") version "1.5.5"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
 group = "ru.bk.oharass.freedomchat"
-version = "1.5.0"
+version = "1.5.1"
 description = "Liberate your server from the chat-reporting bourgeoisie! Disable chat reporting with maximum compatibility."
 
 dependencies {
-    paperweight.paperDevBundle("1.20-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
 }
 
 tasks {
@@ -28,7 +28,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.20")
+        minecraftVersion("1.20.1")
     }
 
     processResources {
