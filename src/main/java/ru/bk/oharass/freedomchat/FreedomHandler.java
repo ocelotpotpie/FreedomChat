@@ -97,6 +97,6 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     }
 
     private void writeId(final ChannelHandlerContext ctx, final Packet<?> packet, final FriendlyByteBuf buf) {
-        buf.writeVarInt(ctx.channel().attr(Connection.ATTRIBUTE_PROTOCOL).get().getPacketId(PacketFlow.CLIENTBOUND, packet));
+        buf.writeVarInt(ctx.channel().attr(Connection.ATTRIBUTE_CLIENTBOUND_PROTOCOL).get().packetId(packet));
     }
 }
