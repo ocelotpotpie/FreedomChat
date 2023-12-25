@@ -3,8 +3,9 @@ version: "$version"
 main: "ru.bk.oharass.freedomchat.FreedomChat"
 description: "$description"
 authors:
+  - "ocelotpotpie"
   - "oharass"
   - "sulu"
-website: "https://github.com/e-im/FreedomChat"
+website: "https://github.com/ocelotpotpie/FreedomChat"
 api-version: "1.20"
 folia-supported: true
