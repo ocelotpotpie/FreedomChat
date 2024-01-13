@@ -20,12 +20,12 @@ jobs:
           cache: 'gradle'
       - name: Build
         run: ./gradlew build
-      - name: Upload
+      - name: Upload Paper
         uses: actions/upload-artifact@v4
         with:
           name: FreedomChat Paper
           path: "paper/build/libs/FreedomChat-*.jar"
-      - name: Upload
+      - name: Upload Fabric
         uses: actions/upload-artifact@v4
         with:
           name: FreedomChat Fabric
