@@ -32,7 +32,7 @@ tasks {
     }
     shadowJar {
         configurations = listOf(shade)
-        archiveClassifier.set("shaded")
+        archiveClassifier.set("dev")
     }
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
