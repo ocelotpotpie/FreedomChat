@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: FreedomChat
-          path: "build/libs/FreedomChat-*.jar"
+          path: "paper/build/libs/FreedomChat-*.jar"

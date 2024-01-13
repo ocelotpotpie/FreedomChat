@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ru.bk.oharass.freedomchat.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ClientConnectionMixin",
+    "PlayerManagerMixin",
+    "ServerCommonNetworkHandlerMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
