@@ -1,4 +1,4 @@
-/.gradle
 /.idea
-/build
-/run
+**/.gradle
+**/build
+paper/run

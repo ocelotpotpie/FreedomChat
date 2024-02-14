@@ -5,7 +5,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static io.papermc.paper.network.ChannelInitializeListenerHolder.*;
+import static io.papermc.paper.network.ChannelInitializeListenerHolder.addListener;
+import static io.papermc.paper.network.ChannelInitializeListenerHolder.hasListener;
+import static io.papermc.paper.network.ChannelInitializeListenerHolder.removeListener;
 
 public class FreedomChat extends JavaPlugin implements Listener {
     private static final Key listenerKey = Key.key("freedomchat", "listener");

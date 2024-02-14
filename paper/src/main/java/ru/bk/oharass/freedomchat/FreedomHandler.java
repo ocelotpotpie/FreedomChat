@@ -13,7 +13,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundServerDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
@@ -33,24 +32,24 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private final boolean noChatReports;
     private final FreedomChat freedom;
 
-    FreedomHandler(boolean rewriteChat, boolean claimSecureChatEnforced, boolean noChatReports, final FreedomChat freedom) {
+    public FreedomHandler(boolean rewriteChat, boolean claimSecureChatEnforced, boolean noChatReports, final FreedomChat freedom) {
         this.rewriteChat = rewriteChat;
         this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
         this.freedom = freedom;
     }
+
     @Override
     public boolean acceptOutboundMessage(Object msg) {
         return rewriteChat && msg instanceof ClientboundPlayerChatPacket
-            || noChatReports && msg instanceof ClientboundStatusResponsePacket
-            || claimSecureChatEnforced && msg instanceof ClientboundServerDataPacket;
+                || noChatReports && msg instanceof ClientboundStatusResponsePacket
+                || claimSecureChatEnforced && msg instanceof ClientboundServerDataPacket;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Packet msg, ByteBuf out) {
         final FriendlyByteBuf fbb = new FriendlyByteBuf(out);
 
-        // no switch pattern matching for us...
         if (msg instanceof ClientboundPlayerChatPacket packet) {
             encode(ctx, packet, fbb);
         } else if (msg instanceof ClientboundServerDataPacket packet) {
@@ -84,11 +83,11 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
 
     private void encode(final ChannelHandlerContext ctx, final ClientboundStatusResponsePacket msg, final FriendlyByteBuf buf) {
         final JsonObject status = ServerStatus.CODEC
-            .encodeStart(JsonOps.INSTANCE, msg.status())
-            .get()
-            .left()
-            .orElseThrow(() -> new EncoderException("Failed to encode ServerStatus"))
-            .getAsJsonObject();
+                .encodeStart(JsonOps.INSTANCE, msg.status())
+                .get()
+                .left()
+                .orElseThrow(() -> new EncoderException("Failed to encode ServerStatus"))
+                .getAsJsonObject();
 
         status.addProperty("preventsChatReports", true);
 
