@@ -23,8 +23,8 @@ public class FreedomChat implements ModInitializer {
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
-            if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && SharedConstants.getProtocolVersion() != 765) {
-                logger.warn("This version of FreedomChat only supports protocol version 765 (1.20.4). Please use the appropriate version of FreedomChat for your server");
+            if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && SharedConstants.getProtocolVersion() != 766) {
+                logger.warn("This version of FreedomChat only supports protocol version 766 (1.20.6). Please use the appropriate version of FreedomChat for your server");
                 logger.warn("If you know what you are doing, set the im.evan.freedomchat.bypassprotocolcheck system property to true to bypass this check");
                 return;
             }
@@ -33,21 +33,19 @@ public class FreedomChat implements ModInitializer {
                     .path(configPath)
                     .nodeStyle(NodeStyle.BLOCK)
                     .build();
-            CommentedConfigurationNode config;
+            final CommentedConfigurationNode config;
             try {
                 config = loader.load();
                 final boolean rewriteChat = config.node("rewrite-chat").getBoolean(true);
-                final boolean claimSecureChatEnforced = config.node("claim-secure-chat-enforced").getBoolean(true);
-                final boolean sendPreventsChatReportsToClient = config.node("send-prevents-chat-reports-to-client").getBoolean(false);
+                final boolean noChatReports = config.node("send-prevents-chat-reports-to-client").getBoolean(false);
                 loader.save(config);
 
                 handler = new FreedomHandler(
+                        this,
                         rewriteChat,
-                        claimSecureChatEnforced,
-                        sendPreventsChatReportsToClient,
-                        this
+                        noChatReports
                 );
-            } catch (ConfigurateException e) {
+            } catch (final ConfigurateException e) {
                 logger.error("An error occurred while loading this configuration: " + e.getMessage());
                 if (e.getCause() != null) {
                     e.getCause().printStackTrace();
