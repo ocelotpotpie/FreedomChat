@@ -13,10 +13,10 @@ repositories {
 }
 
 dependencies {
-    minecraft(group = "com.mojang", name = "minecraft", version = "1.20.6")
-    mappings(group = "net.fabricmc", name = "yarn", version = "1.20.6+build.1", classifier = "v2")
+    minecraft(group = "com.mojang", name = "minecraft", version = "1.21")
+    mappings(group = "net.fabricmc", name = "yarn", version = "1.21+build.7", classifier = "v2")
     modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.15.11")
-    modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.97.8+1.20.6")
+    modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.100.4+1.21")
     shade(implementation(group = "org.spongepowered", name = "configurate-yaml", version = "4.1.2"))
 }
 

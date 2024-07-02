@@ -33,7 +33,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     public FreedomHandler(final boolean rewriteChat, final boolean noChatReports) {
         final RegistryAccess registryAccess = MinecraftServer.getServer().registryAccess();
         final Function<ByteBuf, RegistryFriendlyByteBuf> bufRegistryAccess = RegistryFriendlyByteBuf.decorator(registryAccess);
-        this.s2cPlayPacketCodec = GameProtocols.CLIENTBOUND.bind(bufRegistryAccess).codec();
+        this.s2cPlayPacketCodec = GameProtocols.CLIENTBOUND_TEMPLATE.bind(bufRegistryAccess).codec();
         this.rewriteChat = rewriteChat;
         this.noChatReports = noChatReports;
     }
