@@ -2,6 +2,14 @@
 # system messages. This is what makes chat not reportable.
 rewrite-chat: true
 
+# Whether FreedomChat should claim to clients that secure chat is enforced.
+# With this set to true, the "Chat messages can't be verified" toast will not
+# be shown. This is, in default configurations, unrelated to allowing clients
+# not signing their messages join. In modern versions, clients also
+# require a valid access token to be present for the popup to be hidden.
+# That being said, you may still see the toast even if this option is enabled.
+claim-secure-chat-enforced: true
+
 # Whether to report the server as secure (disabling chat reporting) to the
 # NoChatReports client mod. This displays a green icon on the server list
 # screen and if enforce-secure-profiles is disabled the open chat screen
