@@ -14,7 +14,7 @@ import ru.bk.oharass.freedomchat.access.ServerCommonNetworkHandlerAccess;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-    @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
+    @Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;transitionInbound(Lnet/minecraft/network/NetworkState;Lnet/minecraft/network/listener/PacketListener;)V", shift = At.Shift.AFTER))
     public void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
         final ChannelPipeline pipeline = ((ServerCommonNetworkHandlerAccess) player.networkHandler).getConnectionAccess().getChannel().pipeline();
         pipeline.addAfter("packet_handler", "freedom_handler", FreedomChat.getHandler());

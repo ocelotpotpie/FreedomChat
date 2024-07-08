@@ -37,12 +37,14 @@ public class FreedomChat implements ModInitializer {
             try {
                 config = loader.load();
                 final boolean rewriteChat = config.node("rewrite-chat").getBoolean(true);
+                final boolean claimSecureChatEnforced = config.node("claim-secure-chat-enforced").getBoolean(true);
                 final boolean noChatReports = config.node("send-prevents-chat-reports-to-client").getBoolean(false);
                 loader.save(config);
 
                 handler = new FreedomHandler(
                         this,
                         rewriteChat,
+                        claimSecureChatEnforced,
                         noChatReports
                 );
             } catch (final ConfigurateException e) {

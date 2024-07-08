@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.protocol.game.GameProtocols;
@@ -28,20 +29,23 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private static final int STATUS_RESPONSE_PACKET_ID = 0x00;
     private final StreamCodec<ByteBuf, Packet<? super ClientGamePacketListener>> s2cPlayPacketCodec;
     private final boolean rewriteChat;
+    private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
 
-    public FreedomHandler(final boolean rewriteChat, final boolean noChatReports) {
+    public FreedomHandler(final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports) {
         final RegistryAccess registryAccess = MinecraftServer.getServer().registryAccess();
         final Function<ByteBuf, RegistryFriendlyByteBuf> bufRegistryAccess = RegistryFriendlyByteBuf.decorator(registryAccess);
         this.s2cPlayPacketCodec = GameProtocols.CLIENTBOUND_TEMPLATE.bind(bufRegistryAccess).codec();
         this.rewriteChat = rewriteChat;
+        this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
     }
 
     @Override
     public boolean acceptOutboundMessage(final Object msg) {
         return rewriteChat && msg instanceof ClientboundPlayerChatPacket
-                || noChatReports && msg instanceof ClientboundStatusResponsePacket;
+                || noChatReports && msg instanceof ClientboundStatusResponsePacket
+                || claimSecureChatEnforced && msg instanceof ClientboundLoginPacket;
     }
 
     @Override
@@ -51,6 +55,8 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         if (msg instanceof final ClientboundPlayerChatPacket packet) {
             encode(ctx, packet, fbb);
         } else if (msg instanceof final ClientboundStatusResponsePacket packet) {
+            encode(ctx, packet, fbb);
+        } else if (msg instanceof final ClientboundLoginPacket packet) {
             encode(ctx, packet, fbb);
         }
     }
@@ -64,6 +70,23 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         final ClientboundSystemChatPacket system = new ClientboundSystemChatPacket(decoratedContent, false);
 
         s2cPlayPacketCodec.encode(buf, system);
+    }
+
+    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundLoginPacket msg, final FriendlyByteBuf buf) {
+        final ClientboundLoginPacket rewritten = new ClientboundLoginPacket(
+                msg.playerId(),
+                msg.hardcore(),
+                msg.levels(),
+                msg.maxPlayers(),
+                msg.chunkRadius(),
+                msg.simulationDistance(),
+                msg.reducedDebugInfo(),
+                msg.showDeathScreen(),
+                msg.doLimitedCrafting(),
+                msg.commonPlayerSpawnInfo(),
+                true // Enforced secure chat
+        );
+        s2cPlayPacketCodec.encode(buf, rewritten);
     }
 
     private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundStatusResponsePacket msg, final FriendlyByteBuf buf) {
