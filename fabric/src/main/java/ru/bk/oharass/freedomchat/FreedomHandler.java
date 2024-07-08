@@ -11,6 +11,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.network.packet.s2c.query.QueryResponseS2CPacket;
 import net.minecraft.network.state.PlayStateFactories;
@@ -27,20 +28,23 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private static final int STATUS_RESPONSE_PACKET_ID = 0x00;
     private final PacketCodec<ByteBuf, Packet<? super ClientPlayPacketListener>> s2cPlayPacketCodec;
     private final boolean rewriteChat;
+    private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
 
-    public FreedomHandler(final FreedomChat freedom, final boolean rewriteChat, final boolean noChatReports) {
+    public FreedomHandler(final FreedomChat freedom, final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports) {
         final DynamicRegistryManager registryAccess = freedom.getServer().getRegistryManager();
         final Function<ByteBuf, RegistryByteBuf> bufRegistryAccess = RegistryByteBuf.makeFactory(registryAccess);
         this.s2cPlayPacketCodec = PlayStateFactories.S2C.bind(bufRegistryAccess).codec();
         this.rewriteChat = rewriteChat;
+        this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
     }
 
     @Override
     public boolean acceptOutboundMessage(final Object msg) {
         return rewriteChat && msg instanceof ChatMessageS2CPacket
-                || noChatReports && msg instanceof QueryResponseS2CPacket;
+                || noChatReports && msg instanceof QueryResponseS2CPacket
+                || claimSecureChatEnforced && msg instanceof GameJoinS2CPacket;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         if (msg instanceof final ChatMessageS2CPacket packet) {
             encode(ctx, packet, fbb);
         } else if (msg instanceof final QueryResponseS2CPacket packet) {
+            encode(ctx, packet, fbb);
+        } else if (msg instanceof final GameJoinS2CPacket packet) {
             encode(ctx, packet, fbb);
         }
     }
@@ -63,6 +69,23 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         final GameMessageS2CPacket system = new GameMessageS2CPacket(decoratedContent, false);
 
         s2cPlayPacketCodec.encode(buf, system);
+    }
+
+    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final GameJoinS2CPacket msg, final PacketByteBuf buf) {
+        final GameJoinS2CPacket rewritten = new GameJoinS2CPacket(
+                msg.playerEntityId(),
+                msg.hardcore(),
+                msg.dimensionIds(),
+                msg.maxPlayers(),
+                msg.viewDistance(),
+                msg.simulationDistance(),
+                msg.reducedDebugInfo(),
+                msg.showDeathScreen(),
+                msg.doLimitedCrafting(),
+                msg.commonPlayerSpawnInfo(),
+                true // Enforced secure chat
+        );
+        s2cPlayPacketCodec.encode(buf, rewritten);
     }
 
     private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final QueryResponseS2CPacket msg, final PacketByteBuf buf) {
