@@ -24,7 +24,7 @@ public record CustomServerMetadata(Text description, Optional<ServerMetadata.Pla
                                     .forGetter(CustomServerMetadata::favicon),
                             Codec.BOOL.lenientOptionalFieldOf("enforcesSecureChat", false)
                                     .forGetter(CustomServerMetadata::secureChatEnforced),
-                            Codec.BOOL.lenientOptionalFieldOf("preventsChatReports", true)
+                            Codec.BOOL.lenientOptionalFieldOf("preventsChatReports", false)
                                     .forGetter(CustomServerMetadata::preventsChatReports))
                     .apply(instance, CustomServerMetadata::new));
 
