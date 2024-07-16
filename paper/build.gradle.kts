@@ -3,15 +3,13 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.3.0"
 }
 
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+
 dependencies {
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
 
 tasks {
-    assemble {
-        dependsOn(reobfJar)
-    }
-
     runServer {
         minecraftVersion("1.20.6")
     }
