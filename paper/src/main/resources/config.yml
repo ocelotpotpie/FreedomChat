@@ -8,7 +8,7 @@ rewrite-chat: true
 # not signing their messages join. In modern versions, clients also
 # require a valid access token to be present for the toast to be hidden.
 # That being said, you may still see the toast even if this option is enabled.
-claim-secure-chat-enforced: true
+claim-secure-chat-enforced: false
 
 # Whether to report the server as secure (disabling chat reporting) to the
 # NoChatReports client mod. This displays a green icon on the server list
