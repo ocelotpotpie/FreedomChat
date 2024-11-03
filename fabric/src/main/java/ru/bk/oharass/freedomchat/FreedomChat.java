@@ -23,8 +23,8 @@ public class FreedomChat implements ModInitializer {
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
-            if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && SharedConstants.getProtocolVersion() != 767) {
-                logger.warn("This version of FreedomChat only supports protocol version 767 (1.21). Please use the appropriate version of FreedomChat for your server");
+            if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && SharedConstants.getProtocolVersion() != 768) {
+                logger.warn("This version of FreedomChat only supports protocol version 768 (1.21.3). Please use the appropriate version of FreedomChat for your server");
                 logger.warn("If you know what you are doing, set the im.evan.freedomchat.bypassprotocolcheck system property to true to bypass this check");
                 return;
             }
@@ -37,7 +37,7 @@ public class FreedomChat implements ModInitializer {
             try {
                 config = loader.load();
                 final boolean rewriteChat = config.node("rewrite-chat").getBoolean(true);
-                final boolean claimSecureChatEnforced = config.node("claim-secure-chat-enforced").getBoolean(true);
+                final boolean claimSecureChatEnforced = config.node("claim-secure-chat-enforced").getBoolean(false);
                 final boolean noChatReports = config.node("send-prevents-chat-reports-to-client").getBoolean(false);
                 loader.save(config);
 

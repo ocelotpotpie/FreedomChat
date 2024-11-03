@@ -1,6 +1,6 @@
 plugins {
-    id("dev.architectury.loom") version "1.6-SNAPSHOT"
-    id("io.github.goooler.shadow") version "8.1.7"
+    id("dev.architectury.loom") version "1.7-SNAPSHOT"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 val shade: Configuration by configurations.creating
@@ -13,10 +13,10 @@ repositories {
 }
 
 dependencies {
-    minecraft(group = "com.mojang", name = "minecraft", version = "1.21")
-    mappings(group = "net.fabricmc", name = "yarn", version = "1.21+build.7", classifier = "v2")
-    modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.15.11")
-    modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.100.4+1.21")
+    minecraft(group = "com.mojang", name = "minecraft", version = "1.21.3")
+    mappings(group = "net.fabricmc", name = "yarn", version = "1.21.3+build.2", classifier = "v2")
+    modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.16.9")
+    modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.107.0+1.21.3")
     shade(implementation(group = "org.spongepowered", name = "configurate-yaml", version = "4.1.2"))
 }
 
