@@ -1,24 +1,29 @@
 # Whether FreedomChat should replace player (signed or unsigned) chat with
-# system messages. This is what makes chat not reportable.
+# system messages. This is what makes chat unreportable.
 rewrite-chat: true
 
 # Whether FreedomChat should claim to clients that secure chat is enforced.
 # With this set to true, the "Chat messages can't be verified" toast will not
 # be shown. This is, in default configurations, unrelated to allowing clients
-# not signing their messages join. In modern versions, clients also
-# require a valid access token to be present for the toast to be hidden.
-# That being said, you may still see the toast even if this option is enabled.
-# Note that enabling this option may violate a clause
-# in Minecraft's usage guidelines - 
-# "[You cannot] hide or alter any of the dialogs or prompts that are part of
-# Minecraft (this includes the End User License Agreement (EULA),
-# warning messages, and error messages)"
-# - so use this option at your own discretion.
+# not signing their messages to join. In modern versions, clients also require
+# a valid access token to be present for the toast to be hidden. That being
+# said, you may still see the toast even if this option is enabled.
+#
+# Note that enabling this option may violate the following clause in 
+# Minecraft's usage guidelines: "[Do not] hide or alter any of the dialogs
+# or prompts that are part of Minecraft (this includes the
+# End User License Agreement (EULA), warning messages, and error messages)".
+# This clause includes hiding the toast warning players that secure chat is
+# disabled. Therefore, use this option at your own discretion - the authors of
+# FreedomChat will not claim any responsibility for consequences as a result of
+# enabling this option. Be especially careful if you cannot guarantee that all
+# players on your server know that secure chat is disabled.
 # See https://www.minecraft.net/en-us/usage-guidelines for more information.
 claim-secure-chat-enforced: false
 
 # Whether to report the server as secure (disabling chat reporting) to the
-# NoChatReports client mod. This displays a green icon on the server list
-# screen and if enforce-secure-profiles is disabled the open chat screen
-# for users of the client-side mod.
+# NoChatReports client-side mod. This makes the mod display a green icon in the
+# server list, and if enforce-secure-profile is disabled in the
+# server.properties configuration file, also in the chat GUI in-game for users
+# of the mod.
 send-prevents-chat-reports-to-client: false
