@@ -8,7 +8,12 @@ rewrite-chat: true
 # not signing their messages join. In modern versions, clients also
 # require a valid access token to be present for the toast to be hidden.
 # That being said, you may still see the toast even if this option is enabled.
-# Note that enabling this option may violate Minecraft's usage guidelines.
+# Note that enabling this option may violate a clause
+# in Minecraft's usage guidelines - 
+# "[You cannot] hide or alter any of the dialogs or prompts that are part of
+# Minecraft (this includes the End User License Agreement (EULA),
+# warning messages, and error messages)"
+# - so use this option at your own discretion.
 # See https://www.minecraft.net/en-us/usage-guidelines for more information.
 claim-secure-chat-enforced: false
 
