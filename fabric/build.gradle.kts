@@ -30,6 +30,10 @@ tasks {
         }
     }
     shadowJar {
+        // Relocate configurate & its dependencies
+        relocate("org.spongepowered.configurate", "ru.bk.oharass.freedomchat.lib.org.spongepowered.configurate")
+        relocate("io.leangen.geantyref", "ru.bk.oharass.freedomchat.lib.io.leangen.geantyref")
+        relocate("org.yaml.snakeyaml", "ru.bk.oharass.freedomchat.lib.org.yaml.snakeyaml")
         configurations = listOf(shade)
         archiveClassifier.set("dev")
     }
