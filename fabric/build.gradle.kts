@@ -1,6 +1,6 @@
 plugins {
-    id("dev.architectury.loom") version "1.7-SNAPSHOT"
-    id("com.gradleup.shadow") version "8.3.5"
+    id("dev.architectury.loom") version "1.10-SNAPSHOT"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 val shade: Configuration by configurations.creating
