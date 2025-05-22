@@ -4,9 +4,7 @@
   "package": "ru.bk.oharass.freedomchat.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ClientConnectionMixin",
-    "PlayerManagerMixin",
-    "ServerCommonNetworkHandlerMixin"
+    "ClientConnectionMixin"
   ],
   "client": [
   ],
