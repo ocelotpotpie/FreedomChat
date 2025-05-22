@@ -9,15 +9,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-      - name: Gradle wrapper validation
-        uses: gradle/wrapper-validation-action@v2
+          persist-credentials: false
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'gradle'
       - name: Build
         run: ./gradlew build
       - name: Upload Paper
