@@ -17,3 +17,9 @@ claim-secure-chat-enforced: false
 # screen and if enforce-secure-profiles is disabled the open chat screen
 # for users of the client-side mod.
 send-prevents-chat-reports-to-client: false
+
+# Only enable chat rewriting for Bedrock. This can be desirable if secure chat
+# is supported by the server, and you want Java players to be able to use
+# features provided through the Social Interactions menu, but still want to
+# support chat from Bedrock players connected through Geyser.
+bedrock-only: false

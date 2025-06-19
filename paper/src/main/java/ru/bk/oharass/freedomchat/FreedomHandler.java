@@ -22,6 +22,7 @@ import net.minecraft.server.MinecraftServer;
 import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 
 @ChannelHandler.Sharable
@@ -31,19 +32,21 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private final boolean rewriteChat;
     private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
+    private final boolean bedrockOnly;
 
-    public FreedomHandler(final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports) {
+    public FreedomHandler(final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports, final boolean bedrockOnly) {
         final RegistryAccess registryAccess = MinecraftServer.getServer().registryAccess();
         final Function<ByteBuf, RegistryFriendlyByteBuf> bufRegistryAccess = RegistryFriendlyByteBuf.decorator(registryAccess);
         this.s2cPlayPacketCodec = GameProtocols.CLIENTBOUND_TEMPLATE.bind(bufRegistryAccess).codec();
         this.rewriteChat = rewriteChat;
         this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
+        this.bedrockOnly = bedrockOnly;
     }
 
     @Override
     public boolean acceptOutboundMessage(final Object msg) {
-        return rewriteChat && msg instanceof ClientboundPlayerChatPacket
+        return (rewriteChat && msg instanceof ClientboundPlayerChatPacket packet && (!bedrockOnly || isBedrockPlayer(packet.sender())))
                 || noChatReports && msg instanceof ClientboundStatusResponsePacket
                 || claimSecureChatEnforced && msg instanceof ClientboundLoginPacket;
     }
@@ -103,5 +106,10 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
 
         buf.writeVarInt(STATUS_RESPONSE_PACKET_ID);
         buf.writeJsonWithCodec(CustomServerMetadata.CODEC, customStatus);
+    }
+
+    private boolean isBedrockPlayer(final UUID uuid) {
+        // Bedrock players use a nil uuid bit masked with their xbox user id (xuid). The version is always zero.
+        return uuid.version() == 0;
     }
 }
