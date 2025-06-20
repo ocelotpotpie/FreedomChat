@@ -18,6 +18,7 @@ import net.minecraft.network.state.PlayStateFactories;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.ServerMetadata;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
 import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 
 import java.util.Objects;
@@ -28,6 +29,7 @@ import java.util.function.Function;
 public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private static final int STATUS_RESPONSE_PACKET_ID = 0x00;
     private final PacketCodec<ByteBuf, Packet<? super ClientPlayPacketListener>> s2cPlayPacketCodec;
+    private final Logger logger;
     private final boolean rewriteChat;
     private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
@@ -37,6 +39,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         final DynamicRegistryManager registryAccess = freedom.getServer().getRegistryManager();
         final Function<ByteBuf, RegistryByteBuf> bufRegistryAccess = RegistryByteBuf.makeFactory(registryAccess);
         this.s2cPlayPacketCodec = PlayStateFactories.S2C.bind(bufRegistryAccess).codec();
+        this.logger = freedom.getLogger();
         this.rewriteChat = rewriteChat;
         this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
@@ -54,12 +57,16 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     protected void encode(final ChannelHandlerContext ctx, final Packet msg, final ByteBuf out) {
         final PacketByteBuf fbb = new PacketByteBuf(out);
 
-        if (msg instanceof final ChatMessageS2CPacket packet) {
-            encode(ctx, packet, fbb);
-        } else if (msg instanceof final QueryResponseS2CPacket packet) {
-            encode(ctx, packet, fbb);
-        } else if (msg instanceof final GameJoinS2CPacket packet) {
-            encode(ctx, packet, fbb);
+        try {
+            if (msg instanceof final ChatMessageS2CPacket packet) {
+                encode(ctx, packet, fbb);
+            } else if (msg instanceof final QueryResponseS2CPacket packet) {
+                encode(ctx, packet, fbb);
+            } else if (msg instanceof final GameJoinS2CPacket packet) {
+                encode(ctx, packet, fbb);
+            }
+        } catch(Exception ex) {
+            this.logger.error("FreedomChat encountered an error occurred while encoding a packet!", ex);
         }
     }
 
