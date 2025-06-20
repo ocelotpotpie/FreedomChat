@@ -35,7 +35,7 @@ public class FreedomChat extends JavaPlugin implements Listener {
                 config.getBoolean("rewrite-chat", true),
                 config.getBoolean("claim-secure-chat-enforced", false),
                 config.getBoolean("send-prevents-chat-reports-to-client", false),
-                config.getBoolean("bedrock-only", false)
+                config.getBoolean("rewrite-bedrock-only", false)
         );
 
         addListener(listenerKey, channel -> channel.pipeline().addAfter("packet_handler", "freedom_handler", handler));

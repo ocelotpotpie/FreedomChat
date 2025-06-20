@@ -39,7 +39,7 @@ public class FreedomChat implements ModInitializer {
                 final boolean rewriteChat = config.node("rewrite-chat").getBoolean(true);
                 final boolean claimSecureChatEnforced = config.node("claim-secure-chat-enforced").getBoolean(false);
                 final boolean noChatReports = config.node("send-prevents-chat-reports-to-client").getBoolean(false);
-                final boolean bedrockOnly = config.node("bedrock-only").getBoolean(false);
+                final boolean bedrockOnly = config.node("rewrite-bedrock-only").getBoolean(false);
                 loader.save(config);
 
                 handler = new FreedomHandler(

@@ -22,4 +22,4 @@ send-prevents-chat-reports-to-client: false
 # is supported by the server, and you want Java players to be able to use
 # features provided through the Social Interactions menu, but still want to
 # support chat from Bedrock players connected through Geyser.
-bedrock-only: false
+rewrite-bedrock-only: false
