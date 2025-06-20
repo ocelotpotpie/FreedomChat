@@ -32,6 +32,7 @@ public class FreedomChat extends JavaPlugin implements Listener {
         final FileConfiguration config = this.getConfig();
 
         final FreedomHandler handler = new FreedomHandler(
+                this,
                 config.getBoolean("rewrite-chat", true),
                 config.getBoolean("claim-secure-chat-enforced", false),
                 config.getBoolean("send-prevents-chat-reports-to-client", false),

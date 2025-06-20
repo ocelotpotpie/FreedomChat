@@ -24,19 +24,23 @@ import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @ChannelHandler.Sharable
 public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private static final int STATUS_RESPONSE_PACKET_ID = 0x00;
     private final StreamCodec<ByteBuf, Packet<? super ClientGamePacketListener>> s2cPlayPacketCodec;
+    private final Logger logger;
     private final boolean rewriteChat;
     private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
     private final boolean bedrockOnly;
 
-    public FreedomHandler(final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports, final boolean bedrockOnly) {
+    public FreedomHandler(FreedomChat freedom, final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports, final boolean bedrockOnly) {
         final RegistryAccess registryAccess = MinecraftServer.getServer().registryAccess();
         final Function<ByteBuf, RegistryFriendlyByteBuf> bufRegistryAccess = RegistryFriendlyByteBuf.decorator(registryAccess);
+        this.logger = freedom.getLogger();
         this.s2cPlayPacketCodec = GameProtocols.CLIENTBOUND_TEMPLATE.bind(bufRegistryAccess).codec();
         this.rewriteChat = rewriteChat;
         this.claimSecureChatEnforced = claimSecureChatEnforced;
@@ -55,12 +59,20 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     protected void encode(final ChannelHandlerContext ctx, final Packet msg, final ByteBuf out) {
         final FriendlyByteBuf fbb = new FriendlyByteBuf(out);
 
-        if (msg instanceof final ClientboundPlayerChatPacket packet) {
-            encode(ctx, packet, fbb);
-        } else if (msg instanceof final ClientboundStatusResponsePacket packet) {
-            encode(ctx, packet, fbb);
-        } else if (msg instanceof final ClientboundLoginPacket packet) {
-            encode(ctx, packet, fbb);
+        try {
+            if(msg instanceof final ClientboundPlayerChatPacket packet) {
+                encode(ctx, packet, fbb);
+            } else if(msg instanceof final ClientboundStatusResponsePacket packet) {
+                encode(ctx, packet, fbb);
+            } else if(msg instanceof final ClientboundLoginPacket packet) {
+                encode(ctx, packet, fbb);
+            }
+        } catch(Exception ex) {
+            this.logger.log(
+              Level.SEVERE,
+              "FreedomChat encountered an error occurred while encoding a packet!",
+              ex
+            );
         }
     }
 
