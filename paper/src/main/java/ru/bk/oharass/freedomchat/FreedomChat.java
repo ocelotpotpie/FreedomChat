@@ -15,8 +15,8 @@ public class FreedomChat extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && this.getServer().getUnsafe().getProtocolVersion() != 772) {
-            getLogger().warning("This version of FreedomChat only supports protocol version 772 (1.21.7). Please use the appropriate version of FreedomChat for your server");
+        if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && this.getServer().getUnsafe().getProtocolVersion() != 773) {
+            getLogger().warning("This version of FreedomChat only supports protocol version 773 (1.21.9). Please use the appropriate version of FreedomChat for your server");
             getLogger().warning("If you know what you are doing, set the im.evan.freedomchat.bypassprotocolcheck system property to true to bypass this check");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
