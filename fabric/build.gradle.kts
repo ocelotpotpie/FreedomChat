@@ -1,6 +1,6 @@
 plugins {
-    id("dev.architectury.loom") version "1.11-SNAPSHOT"
-    id("com.gradleup.shadow") version "8.3.9"
+    id("fabric-loom") version "1.14-SNAPSHOT"
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 val shade: Configuration by configurations.creating
@@ -13,22 +13,26 @@ repositories {
 }
 
 dependencies {
-    minecraft(group = "com.mojang", name = "minecraft", version = "1.21.9")
-    mappings(group = "net.fabricmc", name = "yarn", version = "1.21.9+build.1", classifier = "v2")
-    modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.17.2")
-    modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.133.14+1.21.9")
+    minecraft(group = "com.mojang", name = "minecraft", version = "1.21.11")
+    mappings(group = "net.fabricmc", name = "yarn", version = "1.21.11+build.1", classifier = "v2")
+    modImplementation(group = "net.fabricmc", name = "fabric-loader", version = "0.18.3")
+    modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.140.0+1.21.11")
     shade(implementation(group = "org.spongepowered", name = "configurate-yaml", version = "4.2.0"))
 }
 
 tasks {
     processResources {
         filesMatching("fabric.mod.json") {
+            // Fixed: expand expects a map
             expand(
-                "version" to project.version,
-                "description" to project.description,
+                mapOf(
+                    "version" to project.version,
+                    "description" to project.description
+                )
             )
         }
     }
+
     shadowJar {
         // Relocate configurate & its dependencies
         relocate("org.spongepowered.configurate", "ru.bk.oharass.freedomchat.lib.org.spongepowered.configurate")
@@ -37,6 +41,7 @@ tasks {
         configurations = listOf(shade)
         archiveClassifier.set("dev")
     }
+
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
     }
