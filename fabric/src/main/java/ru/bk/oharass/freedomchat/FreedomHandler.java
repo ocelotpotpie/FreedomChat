@@ -4,39 +4,39 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket;
-import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
-import net.minecraft.network.packet.s2c.query.QueryResponseS2CPacket;
-import net.minecraft.network.state.PlayStateFactories;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.server.ServerMetadata;
-import net.minecraft.text.Text;
 import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.network.protocol.game.GameProtocols;
+import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
+import net.minecraft.network.protocol.status.ServerStatus;
 
 @ChannelHandler.Sharable
 public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private static final int STATUS_RESPONSE_PACKET_ID = 0x00;
-    private final PacketCodec<ByteBuf, Packet<? super ClientPlayPacketListener>> s2cPlayPacketCodec;
+    private final StreamCodec<ByteBuf, Packet<? super ClientGamePacketListener>> s2cPlayPacketCodec;
     private final boolean rewriteChat;
     private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
     private final boolean bedrockOnly;
 
     public FreedomHandler(final FreedomChat freedom, final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports, final boolean bedrockOnly) {
-        final DynamicRegistryManager registryAccess = freedom.getServer().getRegistryManager();
-        final Function<ByteBuf, RegistryByteBuf> bufRegistryAccess = RegistryByteBuf.makeFactory(registryAccess);
-        this.s2cPlayPacketCodec = PlayStateFactories.S2C.bind(bufRegistryAccess).codec();
+        final RegistryAccess registryAccess = freedom.getServer().registryAccess();
+        final Function<ByteBuf, RegistryFriendlyByteBuf> bufRegistryAccess = RegistryFriendlyByteBuf.decorator(registryAccess);
+        this.s2cPlayPacketCodec = GameProtocols.CLIENTBOUND_TEMPLATE.bind(bufRegistryAccess).codec();
         this.rewriteChat = rewriteChat;
         this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
@@ -45,42 +45,42 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
 
     @Override
     public boolean acceptOutboundMessage(final Object msg) {
-        return (rewriteChat && msg instanceof ChatMessageS2CPacket packet && (!bedrockOnly || isBedrockPlayer(packet.sender())))
-                || noChatReports && msg instanceof QueryResponseS2CPacket
-                || claimSecureChatEnforced && msg instanceof GameJoinS2CPacket;
+        return (rewriteChat && msg instanceof ClientboundPlayerChatPacket packet && (!bedrockOnly || isBedrockPlayer(packet.sender())))
+                || noChatReports && msg instanceof ClientboundStatusResponsePacket
+                || claimSecureChatEnforced && msg instanceof ClientboundLoginPacket;
     }
 
     @Override
     protected void encode(final ChannelHandlerContext ctx, final Packet msg, final ByteBuf out) {
-        final PacketByteBuf fbb = new PacketByteBuf(out);
+        final FriendlyByteBuf fbb = new FriendlyByteBuf(out);
 
-        if (msg instanceof final ChatMessageS2CPacket packet) {
+        if (msg instanceof final ClientboundPlayerChatPacket packet) {
             encode(ctx, packet, fbb);
-        } else if (msg instanceof final QueryResponseS2CPacket packet) {
+        } else if (msg instanceof final ClientboundStatusResponsePacket packet) {
             encode(ctx, packet, fbb);
-        } else if (msg instanceof final GameJoinS2CPacket packet) {
+        } else if (msg instanceof final ClientboundLoginPacket packet) {
             encode(ctx, packet, fbb);
         }
     }
 
-    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ChatMessageS2CPacket msg, final PacketByteBuf buf) {
-        final Text content = Objects.requireNonNullElseGet(msg.unsignedContent(), () -> Text.literal(msg.body().content()));
+    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundPlayerChatPacket msg, final FriendlyByteBuf buf) {
+        final Component content = Objects.requireNonNullElseGet(msg.unsignedContent(), () -> Component.literal(msg.body().content()));
 
-        final MessageType.Parameters chatType = msg.serializedParameters();
-        final Text decoratedContent = chatType.applyChatDecoration(content);
+        final ChatType.Bound chatType = msg.chatType();
+        final Component decoratedContent = chatType.decorate(content);
 
-        final GameMessageS2CPacket system = new GameMessageS2CPacket(decoratedContent, false);
+        final ClientboundSystemChatPacket system = new ClientboundSystemChatPacket(decoratedContent, false);
 
         s2cPlayPacketCodec.encode(buf, system);
     }
 
-    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final GameJoinS2CPacket msg, final PacketByteBuf buf) {
-        final GameJoinS2CPacket rewritten = new GameJoinS2CPacket(
-                msg.playerEntityId(),
+    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundLoginPacket msg, final FriendlyByteBuf buf) {
+        final ClientboundLoginPacket rewritten = new ClientboundLoginPacket(
+                msg.playerId(),
                 msg.hardcore(),
-                msg.dimensionIds(),
+                msg.levels(),
                 msg.maxPlayers(),
-                msg.viewDistance(),
+                msg.chunkRadius(),
                 msg.simulationDistance(),
                 msg.reducedDebugInfo(),
                 msg.showDeathScreen(),
@@ -91,20 +91,20 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         s2cPlayPacketCodec.encode(buf, rewritten);
     }
 
-    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final QueryResponseS2CPacket msg, final PacketByteBuf buf) {
-        final ServerMetadata status = msg.metadata();
+    private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundStatusResponsePacket msg, final FriendlyByteBuf buf) {
+        final ServerStatus status = msg.status();
 
         final CustomServerMetadata customStatus = new CustomServerMetadata(
                 status.description(),
                 status.players(),
                 status.version(),
                 status.favicon(),
-                status.secureChatEnforced(),
+                status.enforcesSecureChat(),
                 true
         );
 
         buf.writeVarInt(STATUS_RESPONSE_PACKET_ID);
-        buf.encodeAsJson(CustomServerMetadata.CODEC, customStatus);
+        buf.writeJsonWithCodec(CustomServerMetadata.CODEC, customStatus);
     }
 
     private boolean isBedrockPlayer(final UUID uuid) {

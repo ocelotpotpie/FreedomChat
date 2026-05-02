@@ -1,18 +1,18 @@
 package ru.bk.oharass.freedomchat.mixins;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
+import net.minecraft.network.Connection;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import ru.bk.oharass.freedomchat.access.ClientConnectionAccess;
 import ru.bk.oharass.freedomchat.access.ServerCommonNetworkHandlerAccess;
 
-@Mixin(ServerCommonNetworkHandler.class)
+@Mixin(ServerCommonPacketListenerImpl.class)
 public class ServerCommonNetworkHandlerMixin implements ServerCommonNetworkHandlerAccess {
     @Final
     @Shadow
-    protected ClientConnection connection;
+    protected Connection connection;
 
     @Override
     public ClientConnectionAccess getConnectionAccess() {

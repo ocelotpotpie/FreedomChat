@@ -1,6 +1,5 @@
 package ru.bk.oharass.freedomchat;
 
-import io.papermc.paper.util.MappingEnvironment;
 import net.kyori.adventure.key.Key;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -15,15 +14,9 @@ public class FreedomChat extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && this.getServer().getUnsafe().getProtocolVersion() != 774) {
-            getLogger().warning("This version of FreedomChat only supports protocol version 774 (1.21.11). Please use the appropriate version of FreedomChat for your server");
+        if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && this.getServer().getUnsafe().getProtocolVersion() != 775) {
+            getLogger().warning("This version of FreedomChat only supports protocol version 775 (26.1.2). Please use the appropriate version of FreedomChat for your server");
             getLogger().warning("If you know what you are doing, set the im.evan.freedomchat.bypassprotocolcheck system property to true to bypass this check");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        if (!Boolean.getBoolean("im.evan.freedomchat.bypassmappingscheck") && MappingEnvironment.reobf()) {
-            getLogger().warning("This version of FreedomChat only supports Mojang-mapped servers. Please use the Mojang-mapped server JAR");
-            getLogger().warning("If you know what you are doing, set the im.evan.freedomchat.bypassmappingscheck system property to true to bypass this check");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }

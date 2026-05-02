@@ -26,9 +26,9 @@
     "freedomchat.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "fabric": "*",
-    "minecraft": ">=1.21",
-    "java": ">=21"
+    "fabricloader": ">=0.19.2",
+    "fabric-api": "*",
+    "minecraft": ">=26.1",
+    "java": ">=25"
   }
 }
