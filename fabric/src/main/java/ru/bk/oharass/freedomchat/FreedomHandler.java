@@ -4,11 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
-
-import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Function;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,6 +18,11 @@ import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.network.protocol.game.GameProtocols;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
 import net.minecraft.network.protocol.status.ServerStatus;
+import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
+
+import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Function;
 
 @ChannelHandler.Sharable
 public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {

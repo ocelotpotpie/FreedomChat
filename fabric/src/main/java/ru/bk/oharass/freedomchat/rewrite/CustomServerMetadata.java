@@ -2,11 +2,12 @@ package ru.bk.oharass.freedomchat.rewrite;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Optional;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.status.ServerStatus;
+
+import java.util.Optional;
 
 public record CustomServerMetadata(Component description, Optional<ServerStatus.Players> players,
                                    Optional<ServerStatus.Version> version, Optional<ServerStatus.Favicon> favicon,
