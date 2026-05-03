@@ -1,4 +1,3 @@
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.internal.extensions.stdlib.capitalized
 
 pluginManagement {
