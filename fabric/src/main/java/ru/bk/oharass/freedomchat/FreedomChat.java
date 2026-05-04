@@ -24,7 +24,7 @@ public class FreedomChat implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
             if (!Boolean.getBoolean("im.evan.freedomchat.bypassprotocolcheck") && SharedConstants.getProtocolVersion() != 775) {
-                logger.warn("This version of FreedomChat only supports protocol version 775 (26.1.2). Please use the appropriate version of FreedomChat for your server");
+                logger.warn("This version of FreedomChat only supports protocol version 775 (26.1). Please use the appropriate version of FreedomChat for your server");
                 logger.warn("If you know what you are doing, set the im.evan.freedomchat.bypassprotocolcheck system property to true to bypass this check");
                 return;
             }
