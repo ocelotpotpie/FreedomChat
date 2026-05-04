@@ -1,0 +1,22 @@
+[versions]
+configurate = "4.2.0"
+gradle-fabric-loom = "1.16-SNAPSHOT"
+gradle-paperweight = "2.0.0-beta.21"
+gradle-run-paper = "3.0.2"
+gradle-shadow = "8.3.9"
+minecraft-fabric-api = "0.147.0+26.1.2"
+minecraft-fabric-loader = "0.19.2"
+minecraft-mojang-version = "26.1.2"
+minecraft-paperweight-bundle = "26.1.2.build.+"
+
+[libraries]
+configurate-yaml = { module = "org.spongepowered:configurate-yaml", version.ref = "configurate" }
+minecraft-fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "minecraft-fabric-api" }
+minecraft-fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "minecraft-fabric-loader" }
+minecraft-fabric-mojang = { module = "com.mojang:minecraft", version.ref = "minecraft-mojang-version" }
+
+[plugins]
+gradle-fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "gradle-fabric-loom" }
+gradle-paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "gradle-paperweight" }
+gradle-run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "gradle-run-paper" }
+gradle-shadow = { id = "com.gradleup.shadow", version.ref = "gradle-shadow" }

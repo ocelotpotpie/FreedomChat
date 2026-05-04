@@ -1,17 +1,17 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
-    id("xyz.jpenilla.run-paper") version "3.0.2"
+    alias(libs.plugins.gradle.paperweight.userdev)
+    alias(libs.plugins.gradle.run.paper)
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 dependencies {
-    paperweight.paperDevBundle("26.1.2.build.+")
+    paperweight.paperDevBundle(libs.versions.minecraft.paperweight.bundle.get())
 }
 
 tasks {
     runServer {
-        minecraftVersion("26.1.2")
+        minecraftVersion(libs.versions.minecraft.mojang.version.get())
     }
 
     processResources {
