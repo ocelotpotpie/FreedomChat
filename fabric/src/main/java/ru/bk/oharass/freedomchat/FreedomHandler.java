@@ -86,6 +86,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
                 msg.showDeathScreen(),
                 msg.doLimitedCrafting(),
                 msg.commonPlayerSpawnInfo(),
+                msg.onlineMode(),
                 true // Enforced secure chat
         );
         s2cPlayPacketCodec.encode(buf, rewritten);
