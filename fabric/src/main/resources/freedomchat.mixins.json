@@ -5,8 +5,10 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "ClientConnectionMixin",
+    "LastSeenMessagesValidatorAccess",
     "PlayerManagerMixin",
-    "ServerCommonNetworkHandlerMixin"
+    "ServerCommonNetworkHandlerMixin",
+    "ServerGamePacketListenerImplAccess"
   ],
   "client": [
   ],
