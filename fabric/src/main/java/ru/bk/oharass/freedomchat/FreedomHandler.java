@@ -32,6 +32,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     private final boolean claimSecureChatEnforced;
     private final boolean noChatReports;
     private final boolean bedrockOnly;
+    private final PendingChatAcks pendingChatAcks;
 
     public FreedomHandler(final FreedomChat freedom, final boolean rewriteChat, final boolean claimSecureChatEnforced, final boolean noChatReports, final boolean bedrockOnly) {
         final RegistryAccess registryAccess = freedom.getServer().registryAccess();
@@ -41,6 +42,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         this.claimSecureChatEnforced = claimSecureChatEnforced;
         this.noChatReports = noChatReports;
         this.bedrockOnly = bedrockOnly;
+        this.pendingChatAcks = new PendingChatAcks();
     }
 
     @Override
@@ -72,6 +74,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
         final ClientboundSystemChatPacket system = new ClientboundSystemChatPacket(decoratedContent, false);
 
         s2cPlayPacketCodec.encode(buf, system);
+        pendingChatAcks.forget(ctx.channel(), msg.signature());
     }
 
     private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundLoginPacket msg, final FriendlyByteBuf buf) {
