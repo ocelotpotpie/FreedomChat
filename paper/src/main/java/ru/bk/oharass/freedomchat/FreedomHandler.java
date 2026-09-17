@@ -21,7 +21,6 @@ import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 

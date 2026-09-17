@@ -20,7 +20,6 @@ import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
 import net.minecraft.network.protocol.status.ServerStatus;
 import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
