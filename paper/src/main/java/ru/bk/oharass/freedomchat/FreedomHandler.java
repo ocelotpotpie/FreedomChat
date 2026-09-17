@@ -21,7 +21,6 @@ import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import ru.bk.oharass.freedomchat.rewrite.CustomServerMetadata;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -65,7 +64,7 @@ public class FreedomHandler extends MessageToByteEncoder<Packet<?>> {
     }
 
     private void encode(@SuppressWarnings("unused") final ChannelHandlerContext ctx, final ClientboundPlayerChatPacket msg, final FriendlyByteBuf buf) {
-        final Component content = Objects.requireNonNullElseGet(msg.unsignedContent(), () -> Component.literal(msg.body().content()));
+        final Component content = msg.unsignedContent().orElseGet(() -> Component.literal(msg.body().content()));
 
         final ChatType.Bound chatType = msg.chatType();
         final Component decoratedContent = chatType.decorate(content);
